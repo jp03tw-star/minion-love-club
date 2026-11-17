@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffd83d">
+<title>Minion Love Club 💛</title>
+<style>
+:root{--yellow:#ffd83d;--blue:#2879c7;--ink:#243047;--muted:#697386;--paper:#fffdf5}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#fff5b9,#eef7ff);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:var(--ink);min-height:100vh}
+.wrap{max-width:680px;margin:auto;padding:20px 14px 40px}.hero{background:var(--yellow);border:4px solid #fff;border-radius:28px;padding:22px 18px;text-align:center;box-shadow:0 8px 0 #e8bd26}
+.logo{font-size:46px;line-height:1.2}.hero h1{margin:8px 0 4px;font-size:clamp(25px,6vw,36px)}.hero p{margin:0;font-weight:700}
+.panel{background:white;border:1px solid #f0e6bd;border-radius:22px;padding:18px;margin-top:16px;box-shadow:0 5px 18px #26364d12}
+h2{font-size:19px;margin:0 0 13px}.muted{color:var(--muted);font-size:13px}
+input,button{font:inherit}input{width:100%;padding:13px 14px;border:1px solid #d7deea;border-radius:12px;margin:6px 0 10px;background:#fff}
+button{border:0;border-radius:13px;padding:12px 16px;font-weight:800;cursor:pointer;background:var(--blue);color:white}
+button.secondary{background:#edf3fb;color:var(--ink)}button.yellow{background:var(--yellow);color:#493900}button.danger{background:#fff0f0;color:#a32727}
+.row{display:flex;gap:9px;flex-wrap:wrap}.row>*{flex:1}.hidden{display:none!important}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px}.pill{background:#eaf3ff;color:#185b9c;padding:6px 10px;border-radius:99px;font-size:12px;font-weight:800}
+.progress{height:12px;background:#edf0f5;border-radius:99px;overflow:hidden;margin:10px 0 15px}.bar{height:100%;background:linear-gradient(90deg,#ffd83d,#ffb72b);width:0%;transition:width .25s}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}.slot{aspect-ratio:1;border-radius:14px;background:#f3f5f8;display:grid;place-items:center;border:1px dashed #d7deea;font-size:24px}.slot.filled{background:#fff2b6;border:2px solid #edc52e}.slot small{display:block;font-size:10px;color:#725600;font-weight:800}
+.reward{background:#fff8dc;border:1px solid #f2d46a;border-radius:16px;padding:14px;text-align:center}.reward .shoe{font-size:42px}
+.list{padding:0;margin:0;list-style:none}.list li{padding:9px 0;border-bottom:1px solid #f0f2f5;display:flex;justify-content:space-between;gap:8px;font-size:14px}.status{font-size:13px;color:var(--muted);min-height:20px;margin-top:8px}
+footer{text-align:center;color:#775e12;font-weight:700;padding:18px 4px}
+@media(min-width:560px){.wrap{padding-top:28px}.panel{padding:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="logo">🍌💛🟡</div>
+    <h1>MINION LOVE CLUB</h1>
+    <p>女朋友乖乖集點卡</p>
+    <div style="margin-top:9px;font-size:13px">完成一件小任務，就離 EPT 全白鞋更近一步！</div>
+  </header>
+
+  <section id="authPanel" class="panel">
+    <h2>💛 登入集點卡</h2>
+    <p class="muted">第一次使用請先建立帳號。你和女朋友各自使用自己的帳號。</p>
+    <input id="email" type="email" autocomplete="email" placeholder="電子郵件">
+    <input id="password" type="password" autocomplete="current-password" placeholder="密碼（至少 6 碼）">
+    <div class="row">
+      <button id="loginBtn">登入</button>
+      <button id="registerBtn" class="secondary">建立帳號</button>
+    </div>
+    <div id="authStatus" class="status" role="status"></div>
+  </section>
+
+  <main id="appPanel" class="hidden">
+    <section class="panel">
+      <div class="topline">
+        <h2 style="margin:0">⭐ 集點進度</h2>
+        <span id="rolePill" class="pill">會員</span>
+      </div>
+      <div class="topline" style="margin-top:14px">
+        <div><strong id="pointsText" style="font-size:32px">0 / 15</strong><div class="muted">目前累積點數</div></div>
+        <div style="text-align:right"><strong id="percentText" style="font-size:25px">0%</strong><div class="muted">完成進度</div></div>
+      </div>
+      <div class="progress"><div id="progressBar" class="bar"></div></div>
+      <div id="slots" class="grid"></div>
+    </section>
+
+    <section class="panel reward">
+      <div class="shoe">👟</div>
+      <div class="muted">集滿 15 點的終極獎品</div>
+      <h2 style="font-size:23px;margin:5px 0">EPT 全白鞋子</h2>
+      <div id="rewardStatus" style="font-weight:800">再接再厲！💛</div>
+    </section>
+
+    <section id="adminPanel" class="panel hidden">
+      <h2>👑 管理員專區</h2>
+      <label class="muted" for="taskInput">完成的乖乖任務</label>
+      <input id="taskInput" placeholder="例如：乖乖吃飯、早點睡覺、主動報備">
+      <div class="row">
+        <button id="addPointBtn" class="yellow">＋ 獎勵 1 點</button>
+        <button id="minusPointBtn" class="danger">－ 扣除 1 點</button>
+      </div>
+      <p class="muted">只有管理員帳號可以調整點數。每次調整都會留下紀錄。</p>
+      <button id="redeemBtn" class="yellow hidden" style="width:100%">🎁 確認兌換 EPT 全白鞋子，重新集點</button>
+    </section>
+
+    <section class="panel">
+      <div class="topline"><h2 style="margin:0">📜 集點紀錄</h2><span class="pill">雲端同步</span></div>
+      <ul id="historyList" class="list"><li>目前還沒有紀錄</li></ul>
+    </section>
+    <section class="panel">
+      <div class="topline"><span id="userEmail" class="muted"></span><button id="logoutBtn" class="secondary" style="flex:0 0 auto">登出</button></div>
+      <div id="appStatus" class="status" role="status"></div>
+    </section>
+  </main>
+  <footer>Made with love & bananas 🍌</footer>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+import { getFirestore, doc, onSnapshot, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+// Firebase 專案設定
+const firebaseConfig = {
+  apiKey: "AIzaSyDdstvvRpwKQG94CBBLGfmkgzO3oLNwqZc",
+  authDomain: "minion-love-club-6350a.firebaseapp.com",
+  projectId: "minion-love-club-6350a",
+  storageBucket: "minion-love-club-6350a.firebasestorage.app",
+  messagingSenderId: "760414350417",
+  appId: "1:760414350417:web:d213c427b34f15c8cadc70",
+  measurementId: "G-Y1EJM1QWKR"
+};
+
+// TODO：改成你自己的管理員 Email，並同步修改 firestore.rules 裡的 ADMIN_EMAIL。
+const ADMIN_EMAIL = "jp03tw@gmail.com";
+const TARGET = 15;
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const mainRef = doc(db, "club", "main");
+
+const $ = id => document.getElementById(id);
+let unsubscribe = null;
+let currentData = {points:0, history:[], redeemed:0};
+let isAdmin = false;
+
+function status(id, msg){ $(id).textContent = msg; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+$("loginBtn").onclick = async () => {
+  try { await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value); status("authStatus","登入成功！"); }
+  catch(e){ status("authStatus", friendly(e)); }
+};
+$("registerBtn").onclick = async () => {
+  try { await createUserWithEmailAndPassword(auth, $("email").value.trim(), $("password").value); status("authStatus","帳號建立成功！"); }
+  catch(e){ status("authStatus", friendly(e)); }
+};
+$("logoutBtn").onclick = () => signOut(auth);
+function friendly(e){
+  const map = {"auth/invalid-email":"電子郵件格式不正確","auth/email-already-in-use":"這個 Email 已經註冊過","auth/weak-password":"密碼至少需要 6 碼","auth/invalid-credential":"Email 或密碼錯誤","auth/network-request-failed":"網路連線失敗，請稍後再試"};
+  return map[e.code] || e.message;
+}
+
+onAuthStateChanged(auth, async user => {
+  if(unsubscribe){ unsubscribe(); unsubscribe=null; }
+  $("authPanel").classList.toggle("hidden", !!user);
+  $("appPanel").classList.toggle("hidden", !user);
+  if(!user) return;
+  isAdmin = (user.email || "").toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  $("userEmail").textContent = user.email || "已登入";
+  $("rolePill").textContent = isAdmin ? "👑 管理員" : "💛 會員";
+  $("adminPanel").classList.toggle("hidden", !isAdmin);
+  try {
+    const existing = await getDoc(mainRef);
+    if(!existing.exists() && isAdmin){
+      await setDoc(mainRef, {points:0, history:[], redeemed:0, reward:"EPT 全白鞋子", updatedAt:serverTimestamp()});
+    }
+    unsubscribe = onSnapshot(mainRef, snap => {
+      if(!snap.exists()){ status("appStatus","集點卡尚未初始化，請先由管理員登入。"); return; }
+      currentData = snap.data();
+      render();
+    }, err => status("appStatus","讀取失敗："+err.message));
+  } catch(e){ status("appStatus","初始化失敗："+e.message); }
+});
+
+function render(){
+  const p = Math.max(0, Math.min(TARGET, Number(currentData.points)||0));
+  $("pointsText").textContent = `${p} / ${TARGET}`;
+  $("percentText").textContent = `${Math.round(p/TARGET*100)}%`;
+  $("progressBar").style.width = `${p/TARGET*100}%`;
+  $("slots").innerHTML = Array.from({length:TARGET},(_,i)=>`<div class="slot ${i<p?'filled':''}">${i<p?'⭐':'☆'}<small>${i+1}</small></div>`).join("");
+  $("rewardStatus").textContent = p>=TARGET ? "🎉 集滿啦！可以兌換獎品！" : `還差 ${TARGET-p} 點就能把 EPT 全白鞋帶回家！`;
+  $("redeemBtn").classList.toggle("hidden", !(isAdmin && p>=TARGET));
+  const history = Array.isArray(currentData.history) ? currentData.history : [];
+  $("historyList").innerHTML = history.length ? history.slice(0,30).map(h=>`<li><span>${esc(h.task || "點數調整")}<br><small class="muted">${esc(h.when || "")}</small></span><strong>${h.delta>0?"+":""}${h.delta} ⭐</strong></li>`).join("") : "<li>目前還沒有紀錄</li>";
+}
+
+async function changePoints(delta, task){
+  if(!isAdmin) return;
+  const old = Number(currentData.points)||0;
+  const next = Math.max(0, Math.min(TARGET, old+delta));
+  if(next===old){ status("appStatus", delta>0?"已經集滿 15 點了！":"目前沒有可扣除的點數。"); return; }
+  const history = Array.isArray(currentData.history)? [...currentData.history]:[];
+  history.unshift({task, delta:next-old, when:new Date().toLocaleString("zh-TW")});
+  try{
+    await updateDoc(mainRef,{points:next,history:history.slice(0,100),updatedAt:serverTimestamp()});
+    status("appStatus","已更新！女朋友的手機也會同步看到 💛");
+  }catch(e){ status("appStatus","更新失敗："+e.message); }
+}
+$("addPointBtn").onclick = () => {
+  const task = $("taskInput").value.trim();
+  if(!task){ status("appStatus","請先填寫完成的任務內容。"); return; }
+  changePoints(1,task).then(()=>{$("taskInput").value="";});
+};
+$("minusPointBtn").onclick = () => changePoints(-1,"管理員手動扣點");
+$("redeemBtn").onclick = async () => {
+  if(!isAdmin || (Number(currentData.points)||0)<TARGET) return;
+  if(!confirm("確定兌換 EPT 全白鞋子，並將點數歸零重新開始嗎？")) return;
+  const history = Array.isArray(currentData.history)? [...currentData.history]:[];
+  history.unshift({task:"🎁 已兌換：EPT 全白鞋子",delta:0,when:new Date().toLocaleString("zh-TW")});
+  try{
+    await updateDoc(mainRef,{points:0,redeemed:(Number(currentData.redeemed)||0)+1,history:history.slice(0,100),updatedAt:serverTimestamp()});
+    status("appStatus","兌換成功！新的一輪集點開始囉 🍌");
+  }catch(e){status("appStatus","兌換失敗："+e.message);}
+};
+</script>
+</body>
+</html>
